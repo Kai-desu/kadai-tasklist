@@ -16,9 +16,9 @@ class TasksController extends Controller
     public function index()
     {
         $tasks = Task::all();
-        return view('tasks.index',[
+        return view('tasks.index', [
             'tasks' => $tasks,
-            ]);
+        ]);
     }
 
     /**
@@ -30,7 +30,7 @@ class TasksController extends Controller
     {
         $task = new Task;
         
-        return view('tasks.create',[
+        return view('tasks.create', [
             'task' => $task,
             ]);
     }
@@ -60,7 +60,7 @@ class TasksController extends Controller
     {
         $task = Task::find($id);
         
-        return view('tasks.show',[
+        return view('tasks.show', [
             'task' => $task,
             ]);
     }
@@ -75,7 +75,7 @@ class TasksController extends Controller
     {
         $task = Task::find($id);
         
-        return view('tasks.edit',[
+        return view('tasks.edit', [
             'task' => $task,
         ]);
     }

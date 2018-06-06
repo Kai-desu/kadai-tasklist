@@ -9,7 +9,7 @@
 {!! Form::label('content', 'タスク:') !!}
 {!! Form::text('content') !!}
 
-{Form::submit('更新') !!}
+{!! Form::submit('更新') !!}
 
 {!! Form::close() !!}
 
