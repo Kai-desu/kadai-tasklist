@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 
 use App\Task;
 
+use App\User;
+
 class TasksController extends Controller
 {
     /**
@@ -15,10 +17,14 @@ class TasksController extends Controller
      */
     public function index()
     {
-        $tasks = Task::all();
-        return view('tasks.index', [
-            'tasks' => $tasks,
-        ]);
+        if (\Auth::check()) {
+            $user = \Auth::user();
+            $tasks = $user->tasks()->orderBy('created_at', 'desc')->paginate(10);
+            
+            return view('tasks.index',  [ 'tasks' => $tasks]);
+        }else {
+            return view('welcome');
+        }
     }
 
     /**
@@ -26,6 +32,9 @@ class TasksController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+     
+     
+     
     public function create()
     {
         $task = new Task;
@@ -47,10 +56,10 @@ class TasksController extends Controller
             'content' => 'required|max:191',
             'status'=> 'required|max:10',
             ]);
-        $task = new Task;
-        $task->content = $request->content;
-        $task->status = $request->status;
-        $task->save();
+        $request->user()->tasks()->create([
+            'content' => $request->content,
+            'status' => $request->status,
+            ]);
         
         return redirect('/');
     }
@@ -64,10 +73,13 @@ class TasksController extends Controller
     public function show($id)
     {
         $task = Task::find($id);
-        
-        return view('tasks.show', [
+       if(\Auth::id() === $task->user_id){
+           return view('tasks.show', [
             'task' => $task,
             ]);
+       } else {
+           print "Weeeei!!! Zannenn";
+       }
     }
 
     /**
@@ -79,10 +91,13 @@ class TasksController extends Controller
     public function edit($id)
     {
         $task = Task::find($id);
-        
+        if(\Auth::id() === $task->user_id){
         return view('tasks.edit', [
             'task' => $task,
         ]);
+        } else {
+            print "Dekinai-YO!";
+        }
     }
 
     /**
@@ -99,7 +114,7 @@ class TasksController extends Controller
             'status'=>'required|max:10',
             ]);
         $task = Task::find($id);
-        $task -> status = $request->status;
+        $task ->status = $request->status;
         $task->content = $request->content;
         $task->save();
         
@@ -114,9 +129,11 @@ class TasksController extends Controller
      */
     public function destroy($id)
     {
-        $task = Task::find($id);
-        $task->delete();
-        
+        $task = \App\Task::find($id);
+
+        if (\Auth::id() === $task->user_id) {
+            $task->delete();
+        }
         return redirect('/');
     }
 }
