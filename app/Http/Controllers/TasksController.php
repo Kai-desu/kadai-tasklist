@@ -78,7 +78,7 @@ class TasksController extends Controller
             'task' => $task,
             ]);
        } else {
-           print "Weeeei!!! Zannenn";
+            return redirect('/');
        }
     }
 
@@ -96,7 +96,7 @@ class TasksController extends Controller
             'task' => $task,
         ]);
         } else {
-            print "Dekinai-YO!";
+            return view('/');
         }
     }
 
